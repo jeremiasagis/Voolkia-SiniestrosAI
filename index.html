@@ -851,6 +851,40 @@ function renderCotizador() {
           </div>
         </div>
       </div>
+      <!-- ADJUNTOS -->
+      <div class="panel mb-16">
+        <div class="panel-head">
+          <span class="panel-title">📎 Documentación del siniestro</span>
+          <span class="panel-subtitle">Opcional — mejora la precisión</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <div style="border:1.5px dashed var(--gray-200);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseenter="this.style.borderColor='#F47920'" onmouseleave="this.style.borderColor='var(--gray-200)'" onclick="showToast('📸 Función disponible en versión producción')">
+              <div style="font-size:22px;margin-bottom:4px">📸</div>
+              <div style="font-size:12px;font-weight:600;color:var(--gray-600)">Fotos del vehículo</div>
+              <div style="font-size:10.5px;color:var(--gray-400);margin-top:2px">JPG, PNG · máx. 10 fotos</div>
+            </div>
+            <div style="border:1.5px dashed var(--gray-200);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseenter="this.style.borderColor='#F47920'" onmouseleave="this.style.borderColor='var(--gray-200)'" onclick="showToast('🎥 Función disponible en versión producción')">
+              <div style="font-size:22px;margin-bottom:4px">🎥</div>
+              <div style="font-size:12px;font-weight:600;color:var(--gray-600)">Video del siniestro</div>
+              <div style="font-size:10.5px;color:var(--gray-400);margin-top:2px">MP4, MOV · máx. 2 min</div>
+            </div>
+            <div style="border:1.5px dashed var(--gray-200);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseenter="this.style.borderColor='#F47920'" onmouseleave="this.style.borderColor='var(--gray-200)'" onclick="showToast('📄 Función disponible en versión producción')">
+              <div style="font-size:22px;margin-bottom:4px">📄</div>
+              <div style="font-size:12px;font-weight:600;color:var(--gray-600)">Presupuesto de taller</div>
+              <div style="font-size:10.5px;color:var(--gray-400);margin-top:2px">PDF, DOCX, XLSX</div>
+            </div>
+            <div style="border:1.5px dashed var(--gray-200);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all .15s" onmouseenter="this.style.borderColor='#F47920'" onmouseleave="this.style.borderColor='var(--gray-200)'" onclick="showToast('📋 Función disponible en versión producción')">
+              <div style="font-size:22px;margin-bottom:4px">📋</div>
+              <div style="font-size:12px;font-weight:600;color:var(--gray-600)">Acta / denuncia policial</div>
+              <div style="font-size:10.5px;color:var(--gray-400);margin-top:2px">PDF, imagen escaneada</div>
+            </div>
+          </div>
+          <div style="font-size:10.5px;color:var(--gray-400);background:var(--gray-50);padding:8px 10px;border-radius:6px">
+            💡 Las fotos permiten al modelo ajustar la estimación de mano de obra con mayor precisión. El presupuesto de taller se contrasta automáticamente contra el valor de referencia.
+          </div>
+        </div>
+      </div>
       <button class="calc-btn" onclick="calcularCotizacion()">⚡ Calcular valor de referencia</button>
     </div>
 
@@ -919,10 +953,16 @@ function renderCotizador() {
             <div id="r-alerts" style="margin-bottom:12px"></div>
 
             <!-- actions -->
-            <div class="result-actions">
-              <button class="r-btn r-btn-primary" onclick="showToast('📄 Informe generado y enviado al expediente')">📄 Exportar informe</button>
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-400);margin-bottom:8px">Acciones</div>
+            <div class="result-actions" style="margin-bottom:8px">
+              <button class="r-btn r-btn-primary" onclick="showToast('📄 Informe PDF generado y enviado al expediente')">📄 Exportar PDF</button>
+              <button class="r-btn" onclick="showToast('📊 Excel exportado con desglose completo')">📊 Exportar Excel</button>
               <button class="r-btn" onclick="showToast('✅ Caso enviado a negociación')">🤝 Iniciar negociación</button>
-              <button class="r-btn" onclick="showToast('💾 Guardado en el expediente')">💾 Guardar</button>
+            </div>
+            <div class="result-actions">
+              <button class="r-btn" onclick="showToast('💾 Guardado en el expediente SIN-2025-00848')">💾 Guardar en expediente</button>
+              <button class="r-btn" onclick="showToast('📧 Enviado por mail al supervisor')">📧 Enviar a supervisor</button>
+              <button class="r-btn" onclick="showToast('🔗 Link copiado al portapapeles')">🔗 Compartir</button>
             </div>
           </div>
         </div>
@@ -1100,6 +1140,10 @@ function renderMisCasos() {
       <button class="filter-chip">Pendientes</button>
       <button class="filter-chip">En revisión</button>
       <button class="filter-chip">Cerrados</button>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Exportando mis casos a Excel...')">📊 Exportar Excel</button>
+        <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📄 PDF generado con historial de casos')">📄 Exportar PDF</button>
+      </div>
     </div>
     <table class="data-table">
       <thead><tr><th>Siniestro</th><th>Vehículo</th><th>Zona</th><th>Daños</th><th>Sev.</th><th>Referencia</th><th>Estado</th><th>Ingreso</th></tr></thead>
@@ -1137,7 +1181,7 @@ function renderConsultaRapida() {
         </div>
       </div>
       <div class="panel">
-        <div class="panel-head"><span class="panel-title">Rangos históricos por segmento</span></div>
+        <div class="panel-head"><span class="panel-title">Rangos históricos por segmento</span><button class="panel-action" onclick="showToast('📊 Tabla exportada a Excel')">📊 Exportar</button></div>
         <div class="panel-body">
           ${[
             {seg:'Sedán Leve', min:95000, max:220000, avg:148000, n:312},
@@ -1197,6 +1241,14 @@ function renderConsultaRapida() {
 // ═══════════════════════════════════
 function renderDashboardSup() {
   document.getElementById('tc-dashboard-sup').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Resumen operativo — Abril 2025</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Reporte mensual exportado a Excel')">📊 Exportar reporte</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 PDF ejecutivo generado')">📄 PDF ejecutivo</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📧 Reporte enviado a gerencia')">📧 Enviar a gerencia</button>
+    </div>
+  </div>
   <div class="stat-grid stat-grid-5 mb-20">
     <div class="stat-card">
       <div class="stat-card-top"><div class="stat-icon icon-blue">📋</div><span class="stat-delta delta-up">+8%</span></div>
@@ -1310,6 +1362,14 @@ function renderDashboardSup() {
 function renderCola() {
   document.getElementById('tc-cola-siniestros').innerHTML = `
   <div class="panel">
+    <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100);display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:12px;font-weight:600;color:var(--gray-600)">Acciones masivas:</span>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📥 Importando siniestros desde Excel...')">📥 Importar desde Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Exportando cola completa a Excel...')">📊 Exportar cola a Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📄 Informe de gestión generado en PDF')">📄 Informe de gestión</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('🔄 Reasignando casos seleccionados...')">🔄 Reasignar seleccionados</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px;margin-left:auto;border-color:#F47920;color:#F47920" onclick="showToast('✅ Nuevos datos de repuestos actualizados')">🔄 Actualizar repuestos</button>
+    </div>
     <div class="filter-bar">
       <input class="filter-input" placeholder="🔍  Buscar siniestro, ajustador, vehículo..." />
       <button class="filter-chip on">Todos (${CASOS.length})</button>
@@ -1342,6 +1402,10 @@ function renderCola() {
 // ─── EQUIPO ───────────────────────
 function renderEquipo() {
   document.getElementById('tc-equipo').innerHTML = `
+  <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:12px">
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Rendimiento exportado a Excel')">📊 Exportar Excel</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Informe de productividad generado')">📄 Informe PDF</button>
+  </div>
   <div class="stat-grid mb-20">
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">👥</div></div><div class="stat-val">4</div><div class="stat-label">Ajustadores activos</div></div>
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">📋</div></div><div class="stat-val">138</div><div class="stat-label">Casos totales mes</div></div>
@@ -1414,6 +1478,14 @@ function renderAlertas() {
 // ─── EJECUTIVO (GERENTE) ──────────
 function renderEjecutivo() {
   document.getElementById('tc-ejecutivo').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Vista ejecutiva — Abril 2025</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Descargando dashboard completo en Excel')">📊 Exportar a Excel</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Board report generado en PDF')">📄 Board report PDF</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📧 Informe enviado al directorio')">📧 Enviar al directorio</button>
+    </div>
+  </div>
   <div class="stat-grid stat-grid-5 mb-20">
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">📋</div><span class="stat-delta delta-up">+8%</span></div><div class="stat-val">342</div><div class="stat-label">Siniestros mes</div></div>
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">💰</div><span class="stat-delta delta-up">+14%</span></div><div class="stat-val">$4.2M</div><div class="stat-label">Ahorro acumulado</div></div>
@@ -1502,6 +1574,13 @@ function renderEjecutivo() {
 // ─── LOSS RATIO ───────────────────
 function renderLossRatio() {
   document.getElementById('tc-loss-ratio').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Análisis de siniestralidad</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Loss ratio exportado a Excel')">📊 Exportar Excel</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Informe de siniestralidad generado')">📄 Informe PDF</button>
+    </div>
+  </div>
   <div class="stat-grid mb-20">
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">📉</div><span class="stat-delta delta-up">-3.2pts</span></div><div class="stat-val">62.4%</div><div class="stat-label">Loss Ratio actual</div><div class="stat-sub">Meta: ≤ 65%</div></div>
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">💵</div><span class="stat-delta delta-up">+18%</span></div><div class="stat-val">$128M</div><div class="stat-label">Primas devengadas</div></div>
@@ -1629,6 +1708,15 @@ function renderTendencias() {
 // ─── MODELO (ADMIN) ───────────────
 function renderModelo() {
   document.getElementById('tc-modelo').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Estado del modelo — v2.4.1</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📥 Cargando nuevos datos de entrenamiento...')">📥 Cargar nuevos datos</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('🧠 Reentrenamiento iniciado — duración estimada: 40 min')">🧠 Reentrenar modelo</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Reporte técnico exportado')">📊 Exportar métricas</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px;border-color:#1A7A40;color:#1A7A40" onclick="showToast('✅ Backup del modelo generado correctamente')">💾 Backup del modelo</button>
+    </div>
+  </div>
   <div class="stat-grid mb-20">
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">🤖</div><span class="stat-delta delta-up">Activo</span></div><div class="stat-val">v2.4.1</div><div class="stat-label">Versión del modelo</div></div>
     <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">📊</div></div><div class="stat-val">4.847</div><div class="stat-label">Casos en base de entrenamiento</div></div>
@@ -1697,6 +1785,11 @@ function renderModelo() {
 // ─── PARAMETROS ──────────────────
 function renderParametros() {
   document.getElementById('tc-parametros').innerHTML = `
+  <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:12px">
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📥 Importando configuración desde archivo...')">📥 Importar configuración</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Configuración exportada a Excel')">📊 Exportar configuración</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px;border-color:#B03000;color:#B03000" onclick="showToast('↩️ Configuración restaurada a valores por defecto')">↩️ Restaurar defaults</button>
+  </div>
   <div class="grid-2">
     <div>
       <div class="panel mb-16">
@@ -1755,6 +1848,13 @@ function renderParametros() {
 function renderUsuarios() {
   document.getElementById('tc-usuarios').innerHTML = `
   <div class="panel">
+    <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100);display:flex;gap:8px;align-items:center">
+      <span style="font-size:12px;font-weight:600;color:var(--gray-600)">Gestión de usuarios:</span>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('➕ Abriendo formulario de nuevo usuario...')">➕ Nuevo usuario</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📥 Importando usuarios desde Excel...')">📥 Importar desde Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Lista de usuarios exportada')">📊 Exportar lista</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px;margin-left:auto" onclick="showToast('📧 Invitaciones de acceso enviadas')">📧 Enviar invitaciones</button>
+    </div>
     <div class="filter-bar">
       <input class="filter-input" placeholder="🔍  Buscar usuario..." />
       <button class="filter-chip on">Todos</button>
