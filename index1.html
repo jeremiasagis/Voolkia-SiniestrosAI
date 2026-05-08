@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiniestroAI — Plataforma Inteligente de Siniestros</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --navy: #1C0A00;
+  --navy2: #2A1000;
+  --blue: #F47920;
+  --blue2: #E86A10;
+  --blue-lt: #FFF1E6;
+  --blue-mid: #F9A05A;
+  --teal: #C85A00;
+  --teal-lt: #FFF1E6;
+  --amber: #1C0A00;
+  --amber-lt: #F5EDE5;
+  --red: #B03000;
+  --red-lt: #FFE8DC;
+  --gray-50: #FAF6F2;
+  --gray-100: #F0E8DF;
+  --gray-200: #DDD0C4;
+  --gray-400: #9C8878;
+  --gray-600: #5C4030;
+  --gray-800: #1C0A00;
+  --white: #FFFFFF;
+  --font-display: 'Nunito Sans', sans-serif;
+  --font-body: 'Nunito Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 2px 12px rgba(11,31,58,0.08);
+  --shadow-md: 0 4px 24px rgba(11,31,58,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { font-family: var(--font-body); background: var(--gray-50); color: var(--gray-800); min-height: 100vh; }
+
+/* ─── LOGIN ─── */
+#login-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1C0A00 60%, #2A1200 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+#login-screen::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,121,32,0.25) 0%, transparent 70%);
+  top: -200px; right: -150px;
+}
+#login-screen::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,121,32,0.12) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+}
+.login-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 48px 44px;
+  width: 480px;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+}
+.login-logo {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.login-logo span { color: #5BA3E0; }
+.login-tagline { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 40px; }
+.login-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.role-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-lg);
+  padding: 18px 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--white);
+}
+.role-btn:hover { background: rgba(244,121,32,0.12); border-color: rgba(244,121,32,0.5); }
+.role-btn.selected { background: rgba(244,121,32,0.25); border-color: #F47920; }
+.role-icon { font-size: 22px; margin-bottom: 8px; }
+.role-name { font-size: 14px; font-weight: 600; display: block; margin-bottom: 2px; }
+.role-desc { font-size: 11px; color: rgba(255,255,255,0.4); display: block; }
+.login-name-row { margin-bottom: 20px; }
+.login-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.login-input:focus { border-color: #F47920; }
+.login-input::placeholder { color: rgba(255,255,255,0.25); }
+.login-btn {
+  width: 100%;
+  background: #F47920;
+  border: none;
+  border-radius: var(--radius);
+  padding: 13px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.login-btn:hover { background: #E86A10; }
+.login-btn:active { transform: scale(0.99); }
+.login-separator { text-align: center; font-size: 11px; color: rgba(255,255,255,0.25); margin: 16px 0; }
+.demo-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.demo-chip {
+  font-size: 11px; padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  background: transparent;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.demo-chip:hover { border-color: var(--blue2); color: var(--white); }
+
+/* ─── APP SHELL ─── */
+#app { display: none; min-height: 100vh; flex-direction: column; }
+#app.visible { display: flex; }
+
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 0 var(--gray-200);
+}
+.topbar-logo { font-family: var(--font-display); font-size: 18px; color: #1C0A00; letter-spacing: -0.3px; }
+.topbar-logo span { color: var(--blue2); }
+.topbar-divider { width: 1px; height: 22px; background: var(--gray-200); }
+.topbar-empresa { font-size: 12px; color: var(--gray-400); }
+.topbar-empresa strong { color: var(--gray-600); font-weight: 500; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.topbar-user {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--gray-600);
+}
+.user-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #FFF1E6;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #F47920;
+}
+.topbar-role-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.badge-ajustador { background: #FFF1E6; color: #F47920; }
+.badge-supervisor { background: #F5EDE5; color: #C85A00; }
+.badge-gerente { background: #F0E8DF; color: #1C0A00; }
+.badge-admin { background: #1C0A00; color: #F47920; }
+.logout-btn {
+  font-size: 12px; color: var(--gray-400); background: none;
+  border: 1px solid var(--gray-200); border-radius: 6px;
+  padding: 4px 10px; cursor: pointer; font-family: var(--font-body);
+}
+.logout-btn:hover { color: var(--gray-600); border-color: var(--gray-400); }
+
+/* ─── NAV TABS ─── */
+.nav-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  padding: 0 20px;
+  gap: 0;
+  overflow-x: auto;
+}
+.nav-tab {
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 500;
+  color: var(--gray-400);
+  border: none; background: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; white-space: nowrap;
+  font-family: var(--font-body);
+  transition: color 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-tab:hover { color: #F47920; }
+.nav-tab.active { color: #F47920; border-bottom-color: #F47920; }
+.nav-tab .tab-badge {
+  font-size: 10px; font-weight: 600;
+  background: var(--red); color: var(--white);
+  border-radius: 10px; padding: 1px 6px; min-width: 18px; text-align: center;
+}
+
+/* ─── MAIN CONTENT ─── */
+.main { flex: 1; padding: 20px; max-width: 1400px; margin: 0 auto; width: 100%; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ─── STAT CARDS ─── */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-grid-5 { grid-template-columns: repeat(5, 1fr); }
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.stat-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.stat-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.icon-blue { background: #FFF1E6; }
+.icon-teal { background: #E8F5EF; }
+.icon-amber { background: #F5EDE5; }
+.icon-red { background: var(--red-lt); }
+.icon-purple { background: #F0EBF9; }
+.stat-delta { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+.delta-up { background: #E8F5EF; color: #1A7A40; }
+.delta-down { background: var(--red-lt); color: var(--red); }
+.delta-neutral { background: var(--gray-100); color: var(--gray-400); }
+.stat-val { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: #1C0A00; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--gray-400); }
+.stat-sub { font-size: 11px; color: var(--gray-400); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--gray-100); }
+
+/* ─── PANELS ─── */
+.panel {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.panel-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 13px; font-weight: 600; color: #1C0A00; }
+.panel-subtitle { font-size: 11px; color: var(--gray-400); }
+.panel-body { padding: 16px 18px; }
+.panel-action {
+  font-size: 12px; color: #F47920; border: none; background: none;
+  cursor: pointer; font-family: var(--font-body); font-weight: 500;
+}
+
+/* ─── GRID LAYOUTS ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+.grid-3-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+
+/* ─── TABLES ─── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.data-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--gray-400);
+  border-bottom: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--gray-50); }
+.cell-bold { font-weight: 600; color: #1C0A00; }
+.cell-mono { font-family: var(--font-mono); font-size: 11.5px; color: var(--gray-600); }
+.cell-blue { color: #F47920; font-weight: 600; }
+.cell-teal { color: #1A7A40; font-weight: 600; }
+
+/* ─── PILLS & BADGES ─── */
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.pill-green { background: #E8F5EF; color: #1A7A40; }
+.pill-amber { background: var(--amber-lt); color: var(--amber); }
+.pill-blue { background: #FFF1E6; color: #F47920; }
+.pill-red { background: var(--red-lt); color: var(--red); }
+.pill-gray { background: var(--gray-100); color: var(--gray-400); }
+.pill-orange { background: #FFF1E6; color: #F47920; }
+.pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* ─── SEVERITY DOTS ─── */
+.sev { display: inline-flex; gap: 2px; }
+.sev-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray-200); }
+.sev-1 .sev-dot:nth-child(1) { background: #2ECC71; }
+.sev-2 .sev-dot:nth-child(-n+2) { background: #F39C12; }
+.sev-3 .sev-dot:nth-child(-n+3) { background: #E67E22; }
+.sev-4 .sev-dot { background: #C0392B; }
+
+/* ─── MINI PROGRESS ─── */
+.mini-bar { height: 4px; border-radius: 2px; background: var(--gray-100); overflow: hidden; }
+.mini-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+/* ─── COTIZADOR (AJUSTADOR) ─── */
+.cot-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-section { margin-bottom: 20px; }
+.form-section-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--gray-400); margin-bottom: 10px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.field label { display: block; font-size: 11.5px; color: var(--gray-600); margin-bottom: 4px; font-weight: 500; }
+.field select, .field input {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--gray-800); background: var(--white);
+  outline: none; transition: border-color 0.15s;
+}
+.field select:focus, .field input:focus { border-color: #F47920; }
+.damage-map { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+.dmg-btn {
+  border: 1px solid var(--gray-200); border-radius: 8px;
+  background: var(--white); padding: 8px 4px;
+  cursor: pointer; text-align: center; font-size: 11px;
+  color: var(--gray-400); transition: all 0.15s; font-family: var(--font-body);
+}
+.dmg-btn .dmg-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+.dmg-btn:hover { border-color: var(--blue2); color: #F47920; background: #FFF1E6; }
+.dmg-btn.on { border-color: #F47920; background: #FFF1E6; color: #F47920; font-weight: 600; }
+.sev-select { display: flex; gap: 6px; }
+.sev-opt {
+  flex: 1; padding: 8px 4px; border: 1px solid var(--gray-200);
+  border-radius: 8px; text-align: center; cursor: pointer;
+  font-size: 11.5px; font-family: var(--font-body); background: var(--white); color: var(--gray-400);
+  transition: all 0.15s;
+}
+.sev-opt:hover { border-color: var(--blue2); }
+.sev-opt.on { font-weight: 600; }
+.sev-opt[data-v="1"].on { background:#E8F8EF;border-color:#2ECC71;color:#1A8A4A; }
+.sev-opt[data-v="2"].on { background:#FEF9E7;border-color:#F39C12;color:#A67A00; }
+.sev-opt[data-v="3"].on { background:#FEF0E6;border-color:#E67E22;color:#A04800; }
+.sev-opt[data-v="4"].on { background:#FDECEA;border-color:#C0392B;color:#8A1A10; }
+.calc-btn { /* voolkia orange */
+  width: 100%; padding: 12px; background: #1C0A00;
+  border: none; border-radius: 8px; color: var(--white);
+  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+.calc-btn:hover { background: #E86A10; }
+.calc-btn:active { transform: scale(0.99); }
+
+/* RESULT */
+.result-placeholder {
+  border: 2px dashed var(--gray-200); border-radius: var(--radius-lg);
+  padding: 40px 20px; text-align: center;
+  color: var(--gray-400); font-size: 13px;
+}
+.result-placeholder .rp-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
+.result-box { display: none; }
+.result-header-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.result-num-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.rnum-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px; text-align: center; }
+.rnum-card.highlight { background: #FFF1E6; border-color: #F9A05A; }
+.rnum-label { font-size: 10.5px; color: var(--gray-400); margin-bottom: 4px; }
+.rnum-val { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #1C0A00; }
+.rnum-card.highlight .rnum-val { color: #F47920; font-size: 24px; }
+.range-section { margin-bottom: 14px; }
+.range-label-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--gray-400); margin-bottom: 4px; }
+.range-track { height: 6px; background: var(--gray-100); border-radius: 3px; position: relative; overflow: visible; }
+.range-fill { position: absolute; top:0; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #F47920, #1C0A00); }
+.range-marker { position: absolute; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: #1C0A00; border: 2px solid var(--white); box-shadow: 0 1px 4px rgba(0,0,0,0.2); transform: translateX(-50%); }
+.breakdown-table { width: 100%; font-size: 12.5px; border-collapse: collapse; margin-bottom: 14px; }
+.breakdown-table td { padding: 5px 0; }
+.breakdown-table td:last-child { text-align: right; font-weight: 600; color: #1C0A00; }
+.breakdown-table .total-row td { border-top: 1px solid var(--gray-200); padding-top: 8px; font-weight: 700; font-size: 13.5px; color: #F47920; }
+.similares-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.sim-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.sim-label { min-width: 130px; color: var(--gray-600); }
+.sim-bar-wrap { flex: 1; }
+.sim-pct { font-size: 11px; color: var(--gray-400); min-width: 28px; text-align: right; }
+.sim-amount { min-width: 80px; text-align: right; font-weight: 600; font-family: var(--font-mono); color: #F47920; font-size: 12px; }
+.confidence-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.conf-label { font-size: 12px; color: var(--gray-400); }
+.conf-dots { display: flex; gap: 3px; }
+.conf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-200); }
+.conf-dot.on { background: #F47920; }
+.conf-pct { font-size: 12px; font-weight: 600; color: #F47920; }
+.result-actions { display: flex; gap: 8px; }
+.r-btn {
+  flex: 1; padding: 9px; border: 1px solid var(--gray-200);
+  border-radius: 8px; background: var(--white);
+  font-size: 12px; font-family: var(--font-body);
+  color: var(--gray-600); cursor: pointer; text-align: center;
+  transition: all 0.15s;
+}
+.r-btn:hover { border-color: var(--blue2); color: #F47920; background: #FFF1E6; }
+.r-btn-primary { background: #F47920; color: var(--white); border-color: #F47920; }
+.r-btn-primary:hover { background: #E86A10; border-color: #E86A10; color: var(--white); }
+
+/* ─── HISTORIAL PANEL ─── */
+.filter-bar { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--gray-100); flex-wrap: wrap; }
+.filter-input { flex: 1; min-width: 180px; padding: 7px 11px; border: 1px solid var(--gray-200); border-radius: 8px; font-family: var(--font-body); font-size: 13px; outline: none; }
+.filter-input:focus { border-color: #F47920; }
+.filter-chip {
+  padding: 5px 12px; border: 1px solid var(--gray-200);
+  border-radius: 20px; font-size: 12px; cursor: pointer;
+  background: var(--white); color: var(--gray-400); font-family: var(--font-body);
+  transition: all 0.15s; white-space: nowrap;
+}
+.filter-chip:hover { border-color: var(--blue2); color: #F47920; }
+.filter-chip.on { background: #FFF1E6; border-color: #F47920; color: #F47920; font-weight: 600; }
+
+/* ─── ANALYTICS BARS ─── */
+.h-bar-row { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-bottom: 8px; }
+.h-bar-label { min-width: 80px; color: var(--gray-600); }
+.h-bar-track { flex: 1; height: 18px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.h-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 11px; font-weight: 600; color: var(--white); }
+.h-bar-val { min-width: 42px; text-align: right; color: var(--gray-600); font-weight: 600; }
+
+/* ─── ALERTS ─── */
+.alert { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 12.5px; }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-warn { background: var(--amber-lt); border: 1px solid #F0C040; }
+.alert-red { background: var(--red-lt); border: 1px solid #F5A9A4; }
+.alert-blue { background: #FFF1E6; border: 1px solid var(--blue-mid); }
+.alert-teal { background: var(--teal-lt); border: 1px solid #5FC4A8; }
+.alert-title { font-weight: 600; color: #1C0A00; margin-bottom: 2px; }
+.alert-body { color: var(--gray-600); }
+
+/* ─── KPI TREND ─── */
+.kpi-trend { display: flex; gap: 2px; align-items: flex-end; height: 28px; }
+.trend-bar { width: 5px; border-radius: 2px 2px 0 0; background: #F9A05A; opacity: 0.6; }
+.trend-bar:last-child { opacity: 1; }
+
+/* ─── TIMELINE ─── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 12.5px; }
+.tl-item:last-child { border-bottom: none; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+.tl-time { min-width: 48px; color: var(--gray-400); font-family: var(--font-mono); font-size: 11px; }
+.tl-text { color: var(--gray-600); flex: 1; }
+.tl-text strong { color: #1C0A00; }
+
+/* ─── SCROLLBARS ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 3px; }
+
+/* ─── CHART CONTAINERS ─── */
+.chart-wrap { position: relative; }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #F47920; color: var(--white);
+  padding: 12px 18px; border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--shadow-md);
+  transform: translateY(60px); opacity: 0;
+  transition: all 0.3s ease;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ─── MINI SPARKLINE ─── */
+.spark { display: inline-flex; align-items: flex-end; gap: 1.5px; height: 20px; }
+.spark-bar { width: 4px; border-radius: 1px; background: #F9A05A; }
+.spark-bar.up { background: #1A7A40; }
+.spark-bar.down { background: var(--red-lt); }
+
+/* ─── GERENTE SPECIFICS ─── */
+.ratio-gauge { position: relative; width: 120px; height: 60px; margin: 0 auto 8px; }
+.ratio-gauge canvas { width: 120px !important; height: 120px !important; margin-top: -60px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .grid-2, .grid-3, .grid-2-1, .grid-1-2, .grid-3-2, .cot-layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div style="position:absolute;top:0;right:0;width:80px;height:80px;overflow:hidden;border-radius:0 20px 0 0">
+      <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:#F47920;transform:rotate(45deg)"></div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;width:50px;height:50px;overflow:hidden;border-radius:0 0 0 20px">
+      <div style="position:absolute;bottom:-15px;left:-15px;width:50px;height:50px;background:rgba(244,121,32,0.3);transform:rotate(45deg)"></div>
+    </div>
+    <div class="login-logo" style="margin-bottom:6px;display:flex;align-items:center;gap:10px">
+  <svg width="110" height="28" viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg"><text x="0" y="19" font-family="'Nunito Sans',Arial Black,sans-serif" font-weight="900" font-size="21" fill="#F47920" letter-spacing="-0.5">VoolkiA</text></svg>
+  <span style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.6)">· SiniestroAI</span>
+</div>
+    <div class="login-tagline">Plataforma Inteligente de Cotización — Aseguradora Demo S.A.</div>
+
+    <div class="login-label">Seleccioná tu rol</div>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('ajustador', this)">
+        <div class="role-icon">🔧</div>
+        <span class="role-name">Cotizador</span>
+        <span class="role-desc">Cotización de casos</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('supervisor', this)">
+        <div class="role-icon">📊</div>
+        <span class="role-name">Supervisor</span>
+        <span class="role-desc">Control de equipo</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('gerente', this)">
+        <div class="role-icon">🏢</div>
+        <span class="role-name">Gerente</span>
+        <span class="role-desc">Analítica ejecutiva</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('admin', this)">
+        <div class="role-icon">⚙️</div>
+        <span class="role-name">Administrador</span>
+        <span class="role-desc">Configuración del modelo</span>
+      </button>
+    </div>
+
+    <div class="login-name-row">
+      <div class="field"><label>Nombre de usuario</label><input class="login-input" id="login-name" placeholder="Tu nombre..." value=""></div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Ingresar a la plataforma →</button>
+
+    <div class="login-separator">— acceso rápido demo —</div>
+    <div class="demo-chips">
+      <button class="demo-chip" onclick="quickLogin('ajustador','Martín Rodríguez')">🔧 Martín (Cotizador)</button>
+      <button class="demo-chip" onclick="quickLogin('supervisor','Laura Vidal')">📊 Laura (Supervisor)</button>
+      <button class="demo-chip" onclick="quickLogin('gerente','Carlos Ferreyra')">🏢 Carlos (Gerente)</button>
+      <button class="demo-chip" onclick="quickLogin('admin','Ana Quintero')">⚙️ Ana (Admin)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar" style="border-bottom:2px solid #F47920;">
+    <div class="topbar-logo" style="display:flex;align-items:center;gap:12px">
+  <svg width="80" height="22" viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg"><text x="0" y="19" font-family="'Nunito Sans',Arial Black,sans-serif" font-weight="900" font-size="21" fill="#F47920" letter-spacing="-0.5">VoolkiA</text></svg>
+  <span style="width:1px;height:20px;background:#DDD0C4;display:inline-block;flex-shrink:0"></span>
+  <span style="font-size:13px;font-weight:700;color:#1C0A00;white-space:nowrap">Siniestro<span style="color:#F47920">AI</span></span>
+</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-empresa">Aseguradora Demo S.A. <strong>· Siniestros Automotor</strong></div>
+    <div class="topbar-right">
+      <div class="topbar-role-badge" id="role-badge">—</div>
+      <div class="topbar-user">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span id="user-name-display">—</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <!-- NAV TABS -->
+  <div class="nav-tabs" id="nav-tabs"></div>
+
+  <!-- MAIN -->
+  <div class="main" id="main-content"></div>
+
+</div>
+  <div style="text-align:center;padding:8px;font-size:11px;color:#9C8878;background:#FAF6F2;border-top:1px solid #F0E8DF;">
+    <svg width="56" height="15" viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><text x="0" y="19" font-family="'Nunito Sans',Arial Black,sans-serif" font-weight="900" font-size="21" fill="#F47920" letter-spacing="-0.5">VoolkiA</text></svg> · SiniestroAI — Plataforma Inteligente de Siniestros Automotor · Powered by AI & Data
+    <span style="margin:0 8px">·</span> voolkia.com
+  </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ STATE ═══
+let currentRole = null, currentUser = null;
+
+const ROLES = {
+  ajustador: {
+    badge: 'badge-ajustador', label: 'Cotizador',
+    tabs: [
+      { id: 'cotizador', label: '🧮 Cotizador', badge: null },
+      { id: 'mis-casos', label: '📋 Mis Casos', badge: '3' },
+      
+    ]
+  },
+  supervisor: {
+    badge: 'badge-supervisor', label: 'Supervisor',
+    tabs: [
+      { id: 'dashboard-sup', label: '📊 Dashboard', badge: null },
+      { id: 'cola-siniestros', label: '📋 Cola de Siniestros', badge: '7' },
+      { id: 'equipo', label: '👥 Rendimiento Equipo', badge: null },
+      { id: 'alertas', label: '🔔 Alertas', badge: '4' },
+    ]
+  },
+  gerente: {
+    badge: 'badge-gerente', label: 'Gerente',
+    tabs: [
+      { id: 'ejecutivo', label: '🏢 Ejecutivo', badge: null },
+      { id: 'loss-ratio', label: '📉 Loss Ratio', badge: null },
+      { id: 'tendencias', label: '📈 Tendencias', badge: null },
+    ]
+  },
+  admin: {
+    badge: 'badge-admin', label: 'Admin',
+    tabs: [
+      { id: 'modelo', label: '🤖 Estado del Modelo', badge: null },
+      { id: 'parametros', label: '⚙️ Parámetros', badge: null },
+      { id: 'usuarios', label: '👤 Usuarios', badge: null },
+    ]
+  }
+};
+
+// ═══ DATA ═══
+const CASOS = [
+  { id:'SIN-2025-00847', marca:'Toyota', modelo:'Corolla', anio:2022, zona:'CABA', danos:['Frontal','Vidrios'], sev:2, est:'revision', ajustador:'M. Rodríguez', ref:387000, rep:112000, hist:275000, dias:2, ingreso:'08:14' },
+  { id:'SIN-2025-00846', marca:'Volkswagen', modelo:'Vento', anio:2021, zona:'GBA Norte', danos:['Lateral der.'], sev:1, est:'cerrado', ajustador:'P. Gómez', ref:198000, rep:54000, hist:144000, dias:1, ingreso:'07:30' },
+  { id:'SIN-2025-00845', marca:'Ford', modelo:'Ranger', anio:2023, zona:'GBA Sur', danos:['Trasero','Paragolpe'], sev:2, est:'pendiente', ajustador:'M. Rodríguez', ref:441000, rep:128000, hist:313000, dias:0, ingreso:'09:02' },
+  { id:'SIN-2025-00844', marca:'Renault', modelo:'Duster', anio:2020, zona:'CABA', danos:['Frontal','Lateral izq.','Techo'], sev:3, est:'revision', ajustador:'S. Torres', ref:582000, rep:198000, hist:384000, dias:3, ingreso:'Ayer' },
+  { id:'SIN-2025-00843', marca:'Honda', modelo:'Civic', anio:2022, zona:'Córdoba', danos:['Mecánico'], sev:3, est:'cerrado', ajustador:'P. Gómez', ref:520000, rep:165000, hist:355000, dias:4, ingreso:'Ayer' },
+  { id:'SIN-2025-00842', marca:'Chevrolet', modelo:'Tracker', anio:2023, zona:'Rosario', danos:['Paragolpe'], sev:1, est:'cerrado', ajustador:'L. Moreno', ref:127000, rep:38000, hist:89000, dias:1, ingreso:'Ayer' },
+  { id:'SIN-2025-00841', marca:'Peugeot', modelo:'2008', anio:2021, zona:'CABA', danos:['Frontal','Trasero'], sev:3, est:'pendiente', ajustador:'S. Torres', ref:610000, rep:210000, hist:400000, dias:5, ingreso:'Hace 2 días' },
+  { id:'SIN-2025-00840', marca:'Fiat', modelo:'Cronos', anio:2020, zona:'Mendoza', danos:['Lateral der.','Vidrios'], sev:2, est:'cerrado', ajustador:'M. Rodríguez', ref:310000, rep:92000, hist:218000, dias:2, ingreso:'Hace 2 días' },
+  { id:'SIN-2025-00839', marca:'Toyota', modelo:'Hilux', anio:2023, zona:'GBA Oeste', danos:['Trasero','Mecánico'], sev:4, est:'revision', ajustador:'L. Moreno', ref:890000, rep:320000, hist:570000, dias:6, ingreso:'Hace 3 días' },
+  { id:'SIN-2025-00838', marca:'Volkswagen', modelo:'Amarok', anio:2022, zona:'Interior', danos:['Frontal'], sev:2, est:'cerrado', ajustador:'P. Gómez', ref:430000, rep:140000, hist:290000, dias:2, ingreso:'Hace 3 días' },
+];
+
+const EQUIPO = [
+  { nombre:'Martín Rodríguez', casos:42, cerrados:38, prom_dias:1.8, conf:89, ahorro:2840000 },
+  { nombre:'Paula Gómez', casos:37, cerrados:35, prom_dias:2.1, conf:87, ahorro:2310000 },
+  { nombre:'Sergio Torres', casos:31, cerrados:27, prom_dias:3.2, conf:82, ahorro:1980000 },
+  { nombre:'Laura Moreno', casos:28, cerrados:24, prom_dias:2.9, conf:84, ahorro:1760000 },
+];
+
+// ═══ LOGIN ═══
+function selectRole(role, el) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function quickLogin(role, name) {
+  currentRole = role;
+  document.getElementById('login-name').value = name;
+  document.querySelectorAll('.role-btn').forEach(b => {
+    b.classList.toggle('selected', b.querySelector('.role-name').textContent === ROLES[role].label);
+  });
+  doLogin();
+}
+function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  if (!currentRole) { showToast('Seleccioná un rol para continuar'); return; }
+  if (!name) { showToast('Ingresá tu nombre'); return; }
+  currentUser = name;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  setupApp();
+}
+function doLogout() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').style.display = 'flex';
+  currentRole = null; currentUser = null;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
+}
+
+// ═══ APP SETUP ═══
+function setupApp() {
+  const r = ROLES[currentRole];
+  // badge
+  const badge = document.getElementById('role-badge');
+  badge.className = 'topbar-role-badge ' + r.badge;
+  badge.textContent = r.label;
+  // avatar
+  const initials = currentUser.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name-display').textContent = currentUser;
+  // tabs
+  const nav = document.getElementById('nav-tabs');
+  nav.innerHTML = r.tabs.map((t,i) =>
+    `<button class="nav-tab ${i===0?'active':''}" onclick="switchTab('${t.id}',this)">
+      ${t.label}
+      ${t.badge ? `<span class="tab-badge">${t.badge}</span>` : ''}
+    </button>`
+  ).join('');
+  // content
+  const main = document.getElementById('main-content');
+  main.innerHTML = r.tabs.map((t,i) =>
+    `<div class="tab-content ${i===0?'active':''}" id="tc-${t.id}"></div>`
+  ).join('');
+  // render first tab
+  r.tabs.forEach((t,i) => { if(i===0) renderTab(t.id); });
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const tc = document.getElementById('tc-'+id);
+  tc.classList.add('active');
+  if (!tc.dataset.rendered) { tc.dataset.rendered='1'; renderTab(id); }
+}
+
+function renderTab(id) {
+  const map = {
+    cotizador: renderCotizador,
+    'mis-casos': renderMisCasos,
+    'dashboard-sup': renderDashboardSup,
+    'cola-siniestros': renderCola,
+    equipo: renderEquipo,
+    alertas: renderAlertas,
+    ejecutivo: renderEjecutivo,
+    'loss-ratio': renderLossRatio,
+    tendencias: renderTendencias,
+    modelo: renderModelo,
+    parametros: renderParametros,
+    usuarios: renderUsuarios,
+  };
+  if (map[id]) map[id]();
+}
+
+// ═══════════════════════════════════════════
+// ─── COTIZADOR (AJUSTADOR) ──────────────────
+// ═══════════════════════════════════════════
+function renderCotizador() {
+  document.getElementById('tc-cotizador').innerHTML = `
+  <div class="cot-layout">
+    <!-- LEFT: FORMULARIO -->
+    <div>
+      <!-- IDENTIFICACION -->
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Identificación del siniestro</span></div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="field"><label>Número de siniestro</label><input id="nro-sin" placeholder="Auto-generado" value="SIN-2025-00848" /></div>
+            <div class="field"><label>Fecha de ocurrencia</label><input type="date" id="fecha-sin" value="2025-04-10" /></div>
+            <div class="field"><label>Tipo de cobertura</label>
+              <select id="cobertura">
+                <option>Todo Riesgo</option>
+                <option>Terceros Completo</option>
+                <option>Terceros Básico</option>
+              </select>
+            </div>
+            <div class="field"><label>Zona geográfica</label>
+              <select id="zona">
+                <option>CABA</option><option>GBA Norte</option><option>GBA Sur</option>
+                <option>GBA Oeste</option><option>Córdoba</option><option>Rosario</option>
+                <option>Mendoza</option><option>Interior</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- VEHICULO -->
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Datos del vehículo</span></div>
+        <div class="panel-body">
+          <div class="form-grid form-grid-3">
+            <div class="field"><label>Marca</label>
+              <select id="marca" onchange="cargarModelos()">
+                <option value="">Seleccionar...</option>
+                <option>Toyota</option><option>Volkswagen</option><option>Ford</option>
+                <option>Chevrolet</option><option>Renault</option><option>Peugeot</option>
+                <option>Honda</option><option>Fiat</option><option>Nissan</option>
+              </select>
+            </div>
+            <div class="field"><label>Modelo</label>
+              <select id="modelo"><option>— primero marca —</option></select>
+            </div>
+            <div class="field"><label>Año</label>
+              <select id="anio">
+                <option value="">Año...</option>
+                ${Array.from({length:12},(_,i)=>`<option>${2024-i}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>Categoría</label>
+              <select id="categoria">
+                <option>Sedán</option><option>SUV</option><option>Pick-up</option>
+                <option>Hatchback</option><option>Camioneta</option>
+              </select>
+            </div>
+            <div class="field"><label>Km aproximados</label>
+              <select id="km">
+                <option>0–30.000 km</option><option>30.000–80.000 km</option>
+                <option>80.000–150.000 km</option><option>+150.000 km</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- DAÑOS -->
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Zonas de daño visible</span><span class="panel-subtitle" id="danos-count">0 zonas seleccionadas</span></div>
+        <div class="panel-body">
+          <div class="damage-map">
+            <button class="dmg-btn" onclick="toggleDmg(this,'Frontal')"><span class="dmg-icon">⬆️</span>Frontal</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Trasero')"><span class="dmg-icon">⬇️</span>Trasero</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Lateral der.')"><span class="dmg-icon">➡️</span>Lateral der.</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Lateral izq.')"><span class="dmg-icon">⬅️</span>Lateral izq.</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Paragolpe')"><span class="dmg-icon">🔲</span>Paragolpe</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Techo')"><span class="dmg-icon">🔺</span>Techo</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Vidrios')"><span class="dmg-icon">🔷</span>Vidrios</button>
+            <button class="dmg-btn" onclick="toggleDmg(this,'Mecánico')"><span class="dmg-icon">⚙️</span>Mecánico</button>
+          </div>
+        </div>
+      </div>
+      <!-- SEVERIDAD -->
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Severidad estimada del daño</span></div>
+        <div class="panel-body">
+          <div class="sev-select" id="sev-select">
+            <button class="sev-opt" data-v="1" onclick="setSev(1,this)">🟢<br><strong>Leve</strong><br><span style="font-size:10px;color:var(--gray-400)">Estético</span></button>
+            <button class="sev-opt" data-v="2" onclick="setSev(2,this)">🟡<br><strong>Moderado</strong><br><span style="font-size:10px;color:var(--gray-400)">Reparable</span></button>
+            <button class="sev-opt" data-v="3" onclick="setSev(3,this)">🟠<br><strong>Grave</strong><br><span style="font-size:10px;color:var(--gray-400)">Complejo</span></button>
+            <button class="sev-opt" data-v="4" onclick="setSev(4,this)">🔴<br><strong>Total</strong><br><span style="font-size:10px;color:var(--gray-400)">Destrucción</span></button>
+          </div>
+        </div>
+      </div>
+      <!-- NOTAS -->
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Observaciones del ajustador</span></div>
+        <div class="panel-body">
+          <div class="field">
+            <textarea style="width:100%;border:1px solid var(--gray-200);border-radius:8px;padding:9px 11px;font-family:var(--font-body);font-size:13px;resize:vertical;min-height:60px;outline:none;" placeholder="Describí condiciones particulares del siniestro, contexto del lugar, estado general del vehículo..."></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcularCotizacion()">⚡ Calcular valor de referencia</button>
+    </div>
+
+    <!-- RIGHT: RESULTADO -->
+    <div>
+      <div class="panel" id="result-panel">
+        <div class="panel-head">
+          <span class="panel-title">Resultado del modelo</span>
+          <span class="panel-subtitle" id="result-ts">—</span>
+        </div>
+        <div class="panel-body">
+          <div class="result-placeholder" id="result-empty">
+            <div class="rp-icon">🤖</div>
+            Completá los datos del siniestro y presioná <strong>Calcular</strong> para obtener el valor de referencia sugerido por el modelo.
+          </div>
+          <div class="result-box" id="result-box">
+            <!-- header -->
+            <div class="result-header-bar">
+              <div>
+                <div style="font-size:11px;color:var(--gray-400);margin-bottom:2px">Caso <span id="r-id" style="font-family:var(--font-mono)"></span></div>
+                <div style="font-size:13px;font-weight:600;color:#1C0A00" id="r-vehiculo"></div>
+              </div>
+              <span class="pill" id="r-confianza-pill">—</span>
+            </div>
+
+            <!-- main numbers -->
+            <div class="result-num-grid">
+              <div class="rnum-card"><div class="rnum-label">Valor histórico clusterizado</div><div class="rnum-val" id="r-hist">—</div></div>
+              <div class="rnum-card highlight"><div class="rnum-label" style="color:#F47920;font-weight:600">⭐ Referencia inicial</div><div class="rnum-val" id="r-ref">—</div></div>
+              <div class="rnum-card"><div class="rnum-label">Costo repuestos estimado</div><div class="rnum-val" id="r-rep">—</div></div>
+            </div>
+
+            <!-- range -->
+            <div class="range-section">
+              <div class="range-label-row"><span id="r-min">—</span><span style="color:#1C0A00;font-weight:500">Rango de negociación</span><span id="r-max">—</span></div>
+              <div class="range-track">
+                <div class="range-fill" id="r-range-fill" style="left:20%;width:60%"></div>
+                <div class="range-marker" id="r-marker" style="left:50%"></div>
+              </div>
+            </div>
+
+            <!-- breakdown -->
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-400);margin-bottom:8px">Desglose del cálculo</div>
+            <table class="breakdown-table">
+              <tr><td style="color:var(--gray-400)">Mano de obra estimada</td><td id="r-mo">—</td></tr>
+              <tr><td style="color:var(--gray-400)">Repuestos originales</td><td id="r-rep2">—</td></tr>
+              <tr><td style="color:var(--gray-400)">Ajuste por antigüedad del vehículo</td><td id="r-ant">—</td></tr>
+              <tr><td style="color:var(--gray-400)">Ajuste por zona geográfica</td><td id="r-zona">—</td></tr>
+              <tr><td style="color:var(--gray-400)">Ajuste por kilometraje</td><td id="r-km">—</td></tr>
+              <tr class="total-row"><td>Total valor de referencia</td><td id="r-total">—</td></tr>
+            </table>
+
+            <!-- similares -->
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-400);margin-bottom:8px">Casos similares cerrados</div>
+            <div class="similares-list" id="r-similares"></div>
+
+            <!-- confianza -->
+            <div class="confidence-row">
+              <span class="conf-label">Confianza del modelo</span>
+              <div class="conf-dots" id="r-dots"></div>
+              <span class="conf-pct" id="r-conf-pct">—</span>
+              <span style="font-size:11px;color:var(--gray-400);margin-left:4px" id="r-cluster-size"></span>
+            </div>
+
+            <!-- alertas del modelo -->
+            <div id="r-alerts" style="margin-bottom:12px"></div>
+
+            <!-- actions -->
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-400);margin-bottom:8px">Acciones</div>
+            <div class="result-actions" style="margin-bottom:8px">
+              <button class="r-btn r-btn-primary" onclick="showToast('📄 Informe PDF generado y enviado al expediente')">📄 Exportar PDF</button>
+              <button class="r-btn" onclick="showToast('📊 Excel exportado con desglose completo')">📊 Exportar Excel</button>
+              <button class="r-btn" onclick="showToast('✅ Caso enviado a negociación')">🤝 Iniciar negociación</button>
+            </div>
+            <div class="result-actions">
+              <button class="r-btn" onclick="showToast('💾 Guardado en el expediente SIN-2025-00848')">💾 Guardar en expediente</button>
+              <button class="r-btn" onclick="showToast('📧 Enviado por mail al supervisor')">📧 Enviar a supervisor</button>
+              <button class="r-btn" onclick="showToast('🔗 Link copiado al portapapeles')">🔗 Compartir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO PANEL -->
+      <div class="panel" style="margin-top:16px" id="modelo-info-panel">
+        <div class="panel-head"><span class="panel-title">Estado del modelo</span></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;">
+            <div><span style="color:var(--gray-400)">Último entrenamiento</span><br><strong>08/04/2025</strong></div>
+            <div><span style="color:var(--gray-400)">Casos en base</span><br><strong>4.847 siniestros</strong></div>
+            <div><span style="color:var(--gray-400)">Precisión global</span><br><strong style="color:#1A7A40">87.3%</strong></div>
+            <div><span style="color:var(--gray-400)">Clusters activos</span><br><strong>23 segmentos</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+const MODELOS_MAP = {
+  Toyota:['Corolla','Hilux','Etios','Yaris','RAV4','Land Cruiser'],
+  Volkswagen:['Vento','Polo','Golf','Amarok','T-Cross','Taos'],
+  Ford:['Ranger','EcoSport','Fiesta','Focus','Territory','Bronco'],
+  Chevrolet:['Tracker','Cruze','Spin','S10','Onix','Equinox'],
+  Renault:['Duster','Logan','Kangoo','Captur','Sandero','Stepway'],
+  Peugeot:['208','2008','3008','Partner','308','5008'],
+  Honda:['Civic','Fit','HR-V','CR-V','City','WR-V'],
+  Fiat:['Cronos','Argo','Toro','Mobi','Ducato','Pulse'],
+  Nissan:['Frontier','Kicks','March','Versa','X-Trail','Leaf'],
+};
+function cargarModelos() {
+  const m = document.getElementById('marca').value;
+  const s = document.getElementById('modelo');
+  s.innerHTML = m && MODELOS_MAP[m] ? MODELOS_MAP[m].map(x=>`<option>${x}</option>`).join('') : '<option>— primero marca —</option>';
+}
+
+const dmgSel = new Set();
+function toggleDmg(el, d) {
+  el.classList.toggle('on'); dmgSel.has(d)?dmgSel.delete(d):dmgSel.add(d);
+  const el2 = document.getElementById('danos-count');
+  if(el2) el2.textContent = dmgSel.size + ' zona' + (dmgSel.size!==1?'s':'') + ' seleccionada'+(dmgSel.size!==1?'s':'');
+}
+let sevVal = 0;
+function setSev(v, el) {
+  sevVal=v;
+  document.querySelectorAll('.sev-opt').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString('es-AR'); }
+
+function calcularCotizacion() {
+  const marca = document.getElementById('marca').value;
+  const modelo = document.getElementById('modelo').value;
+  const anio = parseInt(document.getElementById('anio').value)||2020;
+  const zona = document.getElementById('zona').value;
+  const cobertura = document.getElementById('cobertura').value;
+  const km = document.getElementById('km').value;
+
+  if (!marca) { showToast('⚠️ Seleccioná la marca del vehículo'); return; }
+  if (!sevVal) { showToast('⚠️ Seleccioná la severidad del daño'); return; }
+  if (dmgSel.size === 0) { showToast('⚠️ Seleccioná al menos una zona de daño'); return; }
+
+  const base = {1:110000,2:270000,3:480000,4:760000}[sevVal];
+  const zonaAdj = {CABA:1.12,'GBA Norte':1.08,'GBA Sur':0.97,'GBA Oeste':0.96,Córdoba:0.94,Rosario:0.93,Mendoza:0.91,Interior:0.87}[zona]||1;
+  const antAdj = Math.max(0.68, 1-(2024-anio)*0.038);
+  const kmAdj = {'0–30.000 km':1.05,'30.000–80.000 km':1.0,'80.000–150.000 km':0.94,'+150.000 km':0.88}[km]||1;
+  const repMap = {Frontal:0.30,Trasero:0.22,'Lateral der.':0.16,'Lateral izq.':0.16,Paragolpe:0.10,Techo:0.20,Vidrios:0.13,Mecánico:0.28};
+  let repFactor = 0; dmgSel.forEach(d => repFactor += repMap[d]||0.1);
+  repFactor = Math.min(repFactor, 0.72);
+
+  const hist = Math.round(base * zonaAdj * antAdj * kmAdj);
+  const rep = Math.round(hist * repFactor);
+  const mo = Math.round(hist * 0.20);
+  const antMonto = Math.round(hist * (1-antAdj) * 0.4);
+  const zonaMonto = Math.round(hist * (zonaAdj-1));
+  const kmMonto = Math.round(hist * (kmAdj-1));
+  const total = hist + rep;
+  const rMin = Math.round(total * 0.76);
+  const rMax = Math.round(total * 1.28);
+  const clusterSize = Math.floor(Math.random()*80)+40;
+  const conf = Math.min(93, Math.max(65, 78 + (clusterSize > 80 ? 8 : 0) - (sevVal > 2 ? 5 : 0) - (dmgSel.size > 3 ? 4 : 0)));
+
+  // fill result
+  document.getElementById('r-id').textContent = 'SIN-2025-00848';
+  document.getElementById('r-vehiculo').textContent = `${marca} ${modelo} — ${anio}`;
+  document.getElementById('r-hist').textContent = fmt(hist);
+  document.getElementById('r-ref').textContent = fmt(total);
+  document.getElementById('r-rep').textContent = fmt(rep);
+  document.getElementById('r-min').textContent = fmt(rMin);
+  document.getElementById('r-max').textContent = fmt(rMax);
+  document.getElementById('r-mo').textContent = fmt(mo);
+  document.getElementById('r-rep2').textContent = fmt(rep);
+  document.getElementById('r-ant').textContent = (antMonto>0?'-':'+') + fmt(Math.abs(antMonto));
+  document.getElementById('r-zona').textContent = (zonaMonto>=0?'+':'-') + fmt(Math.abs(zonaMonto));
+  document.getElementById('r-km').textContent = (kmMonto>=0?'+':'-') + fmt(Math.abs(kmMonto));
+  document.getElementById('r-total').textContent = fmt(total);
+  document.getElementById('r-conf-pct').textContent = conf + '%';
+  document.getElementById('r-cluster-size').textContent = `(${clusterSize} casos similares)`;
+  document.getElementById('result-ts').textContent = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+
+  const pill = document.getElementById('r-confianza-pill'); /* voolkia */
+  if(conf>=85){pill.className='pill pill-green';pill.textContent='Alta confianza';}
+  else if(conf>=72){pill.className='pill pill-amber';pill.textContent='Confianza media';}
+  else{pill.className='pill pill-red';pill.textContent='Confianza baja';}
+
+  // range marker
+  const pct = 50; // marker al medio del rango
+  document.getElementById('r-range-fill').style.left = '15%';
+  document.getElementById('r-range-fill').style.width = '70%';
+  document.getElementById('r-marker').style.left = '50%';
+
+  // dots
+  const dots = document.getElementById('r-dots');
+  dots.innerHTML = Array.from({length:5},(_,i)=>`<div class="conf-dot ${i < Math.round(conf/20)?'on':''}"></div>`).join('');
+
+  // similares
+  const sims = [
+    {v:`${marca} similar (${anio})`, m: Math.round(total*0.93), p:91},
+    {v:`Mismo segmento – ${zona}`, m: Math.round(total*1.04), p:82},
+    {v:`Sev. similar – región`, m: Math.round(total*0.98), p:78},
+    {v:`Cluster más cercano`, m: Math.round(total*1.01), p:75},
+  ];
+  const maxM = Math.max(...sims.map(s=>s.m));
+  document.getElementById('r-similares').innerHTML = sims.map(s=>`
+    <div class="sim-row">
+      <span class="sim-label">${s.v}</span>
+      <div class="sim-bar-wrap"><div class="mini-bar"><div class="mini-fill" style="width:${Math.round(s.m/maxM*100)}%;background:#F47920"></div></div></div>
+      <span class="sim-pct">${s.p}%</span>
+      <span class="sim-amount">${fmt(s.m)}</span>
+    </div>`).join('');
+
+  // alerts
+  let alerts = '';
+  if(dmgSel.size >= 4) alerts += `<div class="alert alert-warn"><div class="alert-icon">⚠️</div><div><div class="alert-title">Múltiples zonas afectadas</div><div class="alert-body">Con ${dmgSel.size} zonas de daño, considerar peritaje presencial para validar.</div></div></div>`;
+  if(sevVal===4) alerts += `<div class="alert alert-red"><div class="alert-icon">🔴</div><div><div class="alert-title">Daño total detectado</div><div class="alert-body">Activar protocolo de baja del vehículo. Verificar póliza y suma asegurada.</div></div></div>`;
+  if(conf < 72) alerts += `<div class="alert alert-blue"><div class="alert-icon">ℹ️</div><div><div class="alert-title">Confianza reducida</div><div class="alert-body">Pocos casos similares en la base. Se recomienda revisión por supervisor antes de negociar.</div></div></div>`;
+  document.getElementById('r-alerts').innerHTML = alerts;
+
+  document.getElementById('result-empty').style.display='none';
+  document.getElementById('result-box').style.display='block';
+  showToast('✅ Cálculo completado — ' + fmt(total) + ' de referencia');
+}
+
+// ═══════════════════════════════════
+// ─── MIS CASOS ─────────────────────
+// ═══════════════════════════════════
+function renderMisCasos() {
+  const misCasos = CASOS.filter(c => c.ajustador === 'M. Rodríguez');
+  document.getElementById('tc-mis-casos').innerHTML = `
+  <div class="stat-grid mb-20">
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-blue">📋</div><span class="stat-delta delta-up">+3 hoy</span></div>
+      <div class="stat-val">${misCasos.length}</div><div class="stat-label">Casos asignados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-teal">✅</div><span class="stat-delta delta-up">91%</span></div>
+      <div class="stat-val">${misCasos.filter(c=>c.est==='cerrado').length}</div><div class="stat-label">Cerrados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-amber">⏳</div></div>
+      <div class="stat-val">${misCasos.filter(c=>c.est!=='cerrado').length}</div><div class="stat-label">En proceso</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-teal">⚡</div></div>
+      <div class="stat-val">1.8d</div><div class="stat-label">Promedio resolución</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="filter-bar">
+      <input class="filter-input" placeholder="🔍  Buscar por número, marca o zona..." />
+      <button class="filter-chip on">Todos</button>
+      <button class="filter-chip">Pendientes</button>
+      <button class="filter-chip">En revisión</button>
+      <button class="filter-chip">Cerrados</button>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Exportando mis casos a Excel...')">📊 Exportar Excel</button>
+        <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📄 PDF generado con historial de casos')">📄 Exportar PDF</button>
+      </div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Siniestro</th><th>Vehículo</th><th>Zona</th><th>Daños</th><th>Sev.</th><th>Referencia</th><th>Estado</th><th>Ingreso</th></tr></thead>
+      <tbody>
+        ${misCasos.map(c=>`<tr>
+          <td class="cell-mono">${c.id}</td>
+          <td class="cell-bold">${c.marca} ${c.modelo} <span style="color:var(--gray-400);font-weight:400">${c.anio}</span></td>
+          <td>${c.zona}</td>
+          <td>${c.danos.join(', ')}</td>
+          <td><div class="sev sev-${c.sev}">${'<div class="sev-dot"></div>'.repeat(4)}</div></td>
+          <td class="cell-blue">${fmt(c.ref)}</td>
+          <td>${estPill(c.est)}</td>
+          <td style="color:var(--gray-400);font-size:11.5px">${c.ingreso}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// ─── CONSULTA RÁPIDA ───────────────
+// ═══════════════════════════════════
+function renderConsultaRapida() {
+  document.getElementById('tc-consulta-rapida').innerHTML = `
+  <div class="grid-2">
+    <div>
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">⚡ Consulta express por marca/modelo</span></div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="field"><label>Marca</label><select><option>Toyota</option><option>Volkswagen</option><option>Ford</option></select></div>
+            <div class="field"><label>Severidad</label><select><option>Leve</option><option>Moderado</option><option>Grave</option></select></div>
+          </div>
+          <button class="calc-btn" style="margin-top:4px" onclick="showToast('📊 Rango histórico cargado')">Ver rango histórico</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Rangos históricos por segmento</span><button class="panel-action" onclick="showToast('📊 Tabla exportada a Excel')">📊 Exportar</button></div>
+        <div class="panel-body">
+          ${[
+            {seg:'Sedán Leve', min:95000, max:220000, avg:148000, n:312},
+            {seg:'SUV Moderado', min:220000, max:480000, avg:340000, n:187},
+            {seg:'Pick-up Grave', min:420000, max:890000, avg:610000, n:94},
+            {seg:'Hatchback Leve', min:80000, max:190000, avg:128000, n:241},
+            {seg:'SUV Grave', min:450000, max:920000, avg:660000, n:78},
+          ].map(r=>`
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                <span style="font-weight:600;color:#1C0A00">${r.seg}</span>
+                <span style="color:var(--gray-400)">${r.n} casos</span>
+              </div>
+              <div class="mini-bar" style="height:8px">
+                <div class="mini-fill" style="width:100%;background:linear-gradient(90deg,#F47920,#1C0A00)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-400);margin-top:2px">
+                <span>${fmt(r.min)}</span>
+                <span style="color:#F47920;font-weight:600">Prom: ${fmt(r.avg)}</span>
+                <span>${fmt(r.max)}</span>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">📋 Últimas consultas</span></div>
+        <div class="panel-body">
+          <div class="timeline">
+            ${[
+              {t:'09:14', text:'Toyota Corolla 2022 · Frontal moderado → <strong>${fmt(310000)}</strong>', c:'#185FA5'},
+              {t:'08:47', text:'VW Vento 2021 · Lateral leve → <strong>${fmt(185000)}</strong>', c:'#185FA5'},
+              {t:'ayer', text:'Ford Ranger 2023 · Trasero moderado → <strong>${fmt(440000)}</strong>', c:'#185FA5'},
+            ].map(i=>`<div class="tl-item">
+              <div class="tl-dot" style="background:${i.c}"></div>
+              <span class="tl-time">${i.t}</span>
+              <span class="tl-text">${i.text.replace(/\${fmt\((\d+)\)}/g,(_,n)=>fmt(+n))}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">💡 Tips del modelo</span></div>
+        <div class="panel-body">
+          <div class="alert alert-blue"><div class="alert-icon">📌</div><div><div class="alert-title">CABA: ajuste +12%</div><div class="alert-body">Los siniestros en CABA tienen un costo histórico 12% mayor al promedio por mayor costo de mano de obra y repuestos.</div></div></div>
+          <div class="alert alert-teal"><div class="alert-icon">📌</div><div><div class="alert-title">Verano: fraude en vidrios</div><div class="alert-body">Históricamente abril-mayo registran 18% más reclamos de vidrios. El modelo activa alerta de revisión automática.</div></div></div>
+          <div class="alert alert-warn"><div class="alert-icon">📌</div><div><div class="alert-title">Pick-ups 2022-2023</div><div class="alert-body">Los repuestos de pick-ups de estos años tienen volatilidad de precios alta. El modelo actualiza el componente de repuestos cada 48h.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// ─── DASHBOARD SUPERVISOR ──────────
+// ═══════════════════════════════════
+function renderDashboardSup() {
+  document.getElementById('tc-dashboard-sup').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Resumen operativo — Abril 2025</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Reporte mensual exportado a Excel')">📊 Exportar reporte</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 PDF ejecutivo generado')">📄 PDF ejecutivo</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📧 Reporte enviado a gerencia')">📧 Enviar a gerencia</button>
+    </div>
+  </div>
+  <div class="stat-grid stat-grid-5 mb-20">
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-blue">📋</div><span class="stat-delta delta-up">+8%</span></div>
+      <div class="stat-val">342</div><div class="stat-label">Siniestros mes</div>
+      <div class="stat-sub">↑ 312 el mes anterior</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-teal">💰</div><span class="stat-delta delta-up">+14%</span></div>
+      <div class="stat-val">$4.2M</div><div class="stat-label">Ahorro acumulado</div>
+      <div class="stat-sub">vs negociación sin ancla</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-amber">⏱️</div><span class="stat-delta delta-up">-56%</span></div>
+      <div class="stat-val">2.1d</div><div class="stat-label">Tiempo prom. resolución</div>
+      <div class="stat-sub">Antes: 4.8 días</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-teal">🎯</div><span class="stat-delta delta-neutral">-2pts</span></div>
+      <div class="stat-val">87%</div><div class="stat-label">Precisión modelo</div>
+      <div class="stat-sub">+casos nuevos en base</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-top"><div class="stat-icon icon-red">🔔</div><span class="stat-delta delta-down">4 activas</span></div>
+      <div class="stat-val">4</div><div class="stat-label">Alertas activas</div>
+      <div class="stat-sub">2 requieren acción</div>
+    </div>
+  </div>
+  <div class="grid-3-2 mb-16">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Siniestros recientes</span><button class="panel-action">Ver todos →</button></div>
+      <table class="data-table">
+        <thead><tr><th>Siniestro</th><th>Vehículo</th><th>Severidad</th><th>Referencia</th><th>Estado</th><th>Cotizador</th></tr></thead>
+        <tbody>
+          ${CASOS.slice(0,6).map(c=>`<tr>
+            <td class="cell-mono">${c.id.split('-').slice(2).join('-')}</td>
+            <td class="cell-bold">${c.marca} ${c.modelo}</td>
+            <td><div class="sev sev-${c.sev}">${'<div class="sev-dot"></div>'.repeat(4)}</div></td>
+            <td class="cell-blue">${fmt(c.ref)}</td>
+            <td>${estPill(c.est)}</td>
+            <td style="font-size:12px">${c.ajustador}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Distribución por severidad</span></div>
+        <div class="panel-body">
+          ${[{l:'Leve',n:156,c:'#2ECC71',p:45},{l:'Moderado',n:130,c:'#F39C12',p:38},{l:'Grave',n:42,c:'#E67E22',p:12},{l:'Total',n:14,c:'#C0392B',p:4}].map(s=>`
+            <div class="h-bar-row">
+              <span class="h-bar-label">${s.l}</span>
+              <div class="h-bar-track"><div class="h-bar-fill" style="width:${s.p*2}%;background:${s.c}">${s.n}</div></div>
+              <span class="h-bar-val">${s.p}%</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Zonas de daño frecuentes</span></div>
+        <div class="panel-body">
+          ${[{l:'Frontal',n:178,p:52},{l:'Trasero',n:96,p:28},{l:'Lateral',n:82,p:24},{l:'Vidrios',n:61,p:18},{l:'Mecánico',n:34,p:10}].map(z=>`
+            <div class="h-bar-row">
+              <span class="h-bar-label">${z.l}</span>
+              <div class="h-bar-track"><div class="h-bar-fill" style="width:${z.p*1.7}%;background:#F47920">${z.n}</div></div>
+              <span class="h-bar-val">${z.p}%</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Rendimiento del equipo</span></div>
+      <table class="data-table">
+        <thead><tr><th>Cotizador</th><th>Casos</th><th>Cerrados</th><th>Prom. días</th><th>Confianza</th><th>Ahorro</th></tr></thead>
+        <tbody>
+          ${EQUIPO.map(e=>`<tr>
+            <td class="cell-bold">${e.nombre}</td>
+            <td>${e.casos}</td>
+            <td style="color:#1A7A40;font-weight:600">${e.cerrados}</td>
+            <td>${e.prom_dias}d</td>
+            <td><span class="pill ${e.conf>=85?'pill-green':'pill-amber'}">${e.conf}%</span></td>
+            <td class="cell-teal">${fmt(e.ahorro)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Actividad reciente</span></div>
+      <div class="panel-body">
+        <div class="timeline">
+          ${[
+            {t:'09:22', text:'<strong>M. Rodríguez</strong> cerró SIN-00847 · $387.000', c:'#2ECC71'},
+            {t:'09:08', text:'<strong>S. Torres</strong> envió SIN-00844 a revisión', c:'#F39C12'},
+            {t:'08:55', text:'Modelo alertó anomalía en SIN-00839 (pick-up)', c:'#C0392B'},
+            {t:'08:30', text:'<strong>P. Gómez</strong> cerró SIN-00843 · $520.000', c:'#2ECC71'},
+            {t:'08:14', text:'Nuevo siniestro asignado a <strong>M. Rodríguez</strong>', c:'#185FA5'},
+          ].map(i=>`<div class="tl-item">
+            <div class="tl-dot" style="background:${i.c}"></div>
+            <span class="tl-time">${i.t}</span>
+            <span class="tl-text">${i.text}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// ─── COLA SINIESTROS ───────────────
+// ═══════════════════════════════════
+function renderCola() {
+  document.getElementById('tc-cola-siniestros').innerHTML = `
+  <div class="panel">
+    <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100);display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:12px;font-weight:600;color:var(--gray-600)">Acciones masivas:</span>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📥 Importando siniestros desde Excel...')">📥 Importar desde Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Exportando cola completa a Excel...')">📊 Exportar cola a Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📄 Informe de gestión generado en PDF')">📄 Informe de gestión</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('🔄 Reasignando casos seleccionados...')">🔄 Reasignar seleccionados</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px;margin-left:auto;border-color:#F47920;color:#F47920" onclick="showToast('✅ Nuevos datos de repuestos actualizados')">🔄 Actualizar repuestos</button>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-input" placeholder="🔍  Buscar siniestro, ajustador, vehículo..." />
+      <button class="filter-chip on">Todos (${CASOS.length})</button>
+      <button class="filter-chip">Pendiente (${CASOS.filter(c=>c.est==='pendiente').length})</button>
+      <button class="filter-chip">Revisión (${CASOS.filter(c=>c.est==='revision').length})</button>
+      <button class="filter-chip">Cerrado (${CASOS.filter(c=>c.est==='cerrado').length})</button>
+      <button class="filter-chip">⚠️ Anomalía</button>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Siniestro</th><th>Vehículo / Año</th><th>Zona</th><th>Daños</th><th>Sev.</th><th>Hist.</th><th>Repuestos</th><th>Referencia</th><th>Estado</th><th>Cotizador</th><th>Días</th></tr></thead>
+      <tbody>
+        ${CASOS.map(c=>`<tr>
+          <td class="cell-mono">${c.id}</td>
+          <td class="cell-bold">${c.marca} ${c.modelo} <span style="color:var(--gray-400);font-weight:400">'${String(c.anio).slice(2)}</span></td>
+          <td>${c.zona}</td>
+          <td style="font-size:11.5px;max-width:120px">${c.danos.join(', ')}</td>
+          <td><div class="sev sev-${c.sev}">${'<div class="sev-dot"></div>'.repeat(4)}</div></td>
+          <td style="color:var(--gray-600);font-family:var(--font-mono);font-size:12px">${fmt(c.hist)}</td>
+          <td style="color:var(--gray-600);font-family:var(--font-mono);font-size:12px">${fmt(c.rep)}</td>
+          <td class="cell-blue">${fmt(c.ref)}</td>
+          <td>${estPill(c.est)}</td>
+          <td style="font-size:12px">${c.ajustador}</td>
+          <td style="text-align:center;font-size:12px;color:${c.dias>3?'var(--red)':'var(--gray-400)'}">${c.dias}d</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ─── EQUIPO ───────────────────────
+function renderEquipo() {
+  document.getElementById('tc-equipo').innerHTML = `
+  <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:12px">
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Rendimiento exportado a Excel')">📊 Exportar Excel</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Informe de productividad generado')">📄 Informe PDF</button>
+  </div>
+  <div class="stat-grid mb-20">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">👥</div></div><div class="stat-val">4</div><div class="stat-label">Cotizadores activos</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">📋</div></div><div class="stat-val">138</div><div class="stat-label">Casos totales mes</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-amber">⏱️</div></div><div class="stat-val">2.4d</div><div class="stat-label">Promedio equipo</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">🎯</div></div><div class="stat-val">85%</div><div class="stat-label">Precisión promedio</div></div>
+  </div>
+  <div class="grid-2">
+    ${EQUIPO.map(e=>`
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">${e.nombre}</div>
+          <div class="panel-subtitle">Cotizador</div>
+        </div>
+        <span class="pill ${e.conf>=85?'pill-green':'pill-amber'}">${e.conf}% confianza</span>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:#1C0A00">${e.casos}</div><div style="font-size:11px;color:var(--gray-400)">Casos asignados</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:#1A7A40">${e.cerrados}</div><div style="font-size:11px;color:var(--gray-400)">Cerrados</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:#1C0A00">${e.prom_dias}d</div><div style="font-size:11px;color:var(--gray-400)">Prom. días</div></div>
+        </div>
+        <div style="font-size:11.5px;color:var(--gray-400);margin-bottom:4px">Ahorro generado</div>
+        <div style="font-size:18px;font-weight:700;color:#F47920;margin-bottom:10px">${fmt(e.ahorro)}</div>
+        <div class="mini-bar"><div class="mini-fill" style="width:${e.cerrados/e.casos*100}%;background:#1A7A40"></div></div>
+        <div style="font-size:11px;color:var(--gray-400);margin-top:3px">${Math.round(e.cerrados/e.casos*100)}% tasa de cierre</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ─── ALERTAS ──────────────────────
+function renderAlertas() {
+  document.getElementById('tc-alertas').innerHTML = `
+  <div class="grid-2-1">
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#1C0A00;margin-bottom:12px">Alertas activas</div>
+      <div class="alert alert-red mb-16"><div class="alert-icon">🔴</div><div><div class="alert-title">SIN-00839 — Posible subfacturación de repuestos</div><div class="alert-body">Pick-up Toyota Hilux 2023: el presupuesto de taller es 38% inferior al rango histórico del cluster. Recomendado peritaje adicional.</div></div></div>
+      <div class="alert alert-red mb-16"><div class="alert-icon">🔴</div><div><div class="alert-title">SIN-00844 — Caso complejo sin avance (3 días)</div><div class="alert-body">Renault Duster con 3 zonas de daño lleva 3 días sin cierre. Requiere intervención del supervisor.</div></div></div>
+      <div class="alert alert-warn mb-16"><div class="alert-icon">⚠️</div><div><div class="alert-title">SIN-00841 — Excede rango histórico +22%</div><div class="alert-body">Peugeot 2008 con daño frontal + trasero: el presupuesto presentado excede el rango en $134.000. Verificar doble cargo de mano de obra.</div></div></div>
+      <div class="alert alert-warn mb-16"><div class="alert-icon">⚠️</div><div><div class="alert-title">Cluster de vidrios — Frecuencia inusual</div><div class="alert-body">Se detectaron 14 siniestros de vidrios en zona GBA Norte en 5 días (vs 3.2 promedio histórico). Posible patrón de fraude coordinado.</div></div></div>
+      <div class="alert alert-blue"><div class="alert-icon">ℹ️</div><div><div class="alert-title">Actualización de repuestos programada</div><div class="alert-body">El modelo actualizará la base de precios de repuestos mañana a las 03:00 AM. No se esperan disrupciones.</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Resumen de alertas</span></div>
+        <div class="panel-body">
+          ${[{l:'🔴 Críticas',n:2,c:'#B03000'},{l:'⚠️ Advertencias',n:2,c:'#E86A10'},{l:'ℹ️ Informativas',n:1,c:'#F47920'}].map(a=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100)">
+            <span style="font-size:13px;color:var(--gray-600)">${a.l}</span>
+            <span style="font-size:18px;font-weight:700;color:${a.c}">${a.n}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Historial de alertas (30d)</span></div>
+        <div class="panel-body">
+          ${[{mes:'Abr',n:4},{mes:'Mar',n:7},{mes:'Feb',n:3},{mes:'Ene',n:9}].map(m=>`
+          <div class="h-bar-row">
+            <span class="h-bar-label">${m.mes}</span>
+            <div class="h-bar-track"><div class="h-bar-fill" style="width:${m.n*8}%;background:#B03000">${m.n}</div></div>
+            <span class="h-bar-val">${m.n}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── EJECUTIVO (GERENTE) ──────────
+function renderEjecutivo() {
+  document.getElementById('tc-ejecutivo').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Vista ejecutiva — Abril 2025</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Descargando dashboard completo en Excel')">📊 Exportar a Excel</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Board report generado en PDF')">📄 Board report PDF</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📧 Informe enviado al directorio')">📧 Enviar al directorio</button>
+    </div>
+  </div>
+  <div class="stat-grid stat-grid-5 mb-20">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">📋</div><span class="stat-delta delta-up">+8%</span></div><div class="stat-val">342</div><div class="stat-label">Siniestros mes</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">💰</div><span class="stat-delta delta-up">+14%</span></div><div class="stat-val">$4.2M</div><div class="stat-label">Ahorro acumulado</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-red">📉</div><span class="stat-delta delta-up">-3.2pts</span></div><div class="stat-val">62.4%</div><div class="stat-label">Loss Ratio</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-amber">⏱️</div><span class="stat-delta delta-up">-56%</span></div><div class="stat-val">2.1d</div><div class="stat-label">Tiempo resolución</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">🎯</div></div><div class="stat-val">87%</div><div class="stat-label">Precisión IA</div></div>
+  </div>
+  <div class="grid-2 mb-16">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Evolución mensual de siniestros y ahorro</span></div>
+      <div class="panel-body chart-wrap" style="height:200px"><canvas id="chart-evol"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Distribución de costos cerrados</span></div>
+      <div class="panel-body chart-wrap" style="height:200px"><canvas id="chart-dist"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Top zonas por volumen</span></div>
+      <div class="panel-body">
+        ${[{z:'CABA',n:112,p:33},{z:'GBA Norte',n:78,p:23},{z:'GBA Sur',n:55,p:16},{z:'Córdoba',n:42,p:12},{z:'Rosario',n:31,p:9},{z:'Otros',n:24,p:7}].map(z=>`
+        <div class="h-bar-row"><span class="h-bar-label">${z.z}</span>
+          <div class="h-bar-track"><div class="h-bar-fill" style="width:${z.p*2.5}%;background:#F47920">${z.n}</div></div>
+          <span class="h-bar-val">${z.p}%</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Top marcas siniestradas</span></div>
+      <div class="panel-body">
+        ${[{m:'Toyota',n:82,p:24},{m:'Volkswagen',n:64,p:19},{m:'Ford',n:56,p:16},{m:'Renault',n:48,p:14},{m:'Chevrolet',n:41,p:12},{m:'Otros',n:51,p:15}].map(m=>`
+        <div class="h-bar-row"><span class="h-bar-label">${m.m}</span>
+          <div class="h-bar-track"><div class="h-bar-fill" style="width:${m.p*2.5}%;background:#1C0A00">${m.n}</div></div>
+          <span class="h-bar-val">${m.p}%</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">KPIs vs benchmark sector</span></div>
+      <div class="panel-body">
+        ${[
+          {k:'Loss Ratio',n:'62.4%',b:'68.1%',mejor:true},
+          {k:'Tiempo resolución',n:'2.1d',b:'4.8d',mejor:true},
+          {k:'% casos con peritaje',n:'18%',b:'34%',mejor:true},
+          {k:'Tasa de reapertura',n:'4.2%',b:'9.1%',mejor:true},
+          {k:'Satisfacción cliente',n:'4.3/5',b:'3.8/5',mejor:true},
+        ].map(k=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px">
+          <span style="color:var(--gray-600)">${k.k}</span>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="color:${k.mejor?'#1A7A40':'#B03000'};font-weight:700">${k.n}</span>
+            <span style="color:var(--gray-400);font-size:11px">vs ${k.b}</span>
+            <span>${k.mejor?'✅':'❌'}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    // Chart evolución
+    const ctx1 = document.getElementById('chart-evol');
+    if(ctx1) new Chart(ctx1, {
+      type:'bar',
+      data:{
+        labels:['Nov','Dic','Ene','Feb','Mar','Abr'],
+        datasets:[
+          {label:'Siniestros',data:[287,312,295,318,312,342],backgroundColor:'rgba(244,121,32,0.15)',borderColor:'#F47920',borderWidth:2,type:'bar'},
+          {label:'Ahorro ($M)',data:[2.8,3.1,2.9,3.4,3.7,4.2],backgroundColor:'transparent',borderColor:'#1C0A00',borderWidth:2,type:'line',yAxisID:'y1',tension:0.4},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10}}},y1:{position:'right',grid:{display:false},ticks:{font:{size:10},callback:v=>'$'+v+'M'}}}}
+    });
+    const ctx2 = document.getElementById('chart-dist');
+    if(ctx2) new Chart(ctx2, {
+      type:'doughnut',
+      data:{
+        labels:['Mano de obra','Repuestos orig.','Gastos admin.','Peritaje'],
+        datasets:[{data:[38,42,12,8],backgroundColor:['#F47920','#1C0A00','#E86A10','#F9A05A']}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11}}}},cutout:'65%'}
+    });
+  }, 100);
+}
+
+// ─── LOSS RATIO ───────────────────
+function renderLossRatio() {
+  document.getElementById('tc-loss-ratio').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Análisis de siniestralidad</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Loss ratio exportado a Excel')">📊 Exportar Excel</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📄 Informe de siniestralidad generado')">📄 Informe PDF</button>
+    </div>
+  </div>
+  <div class="stat-grid mb-20">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">📉</div><span class="stat-delta delta-up">-3.2pts</span></div><div class="stat-val">62.4%</div><div class="stat-label">Loss Ratio actual</div><div class="stat-sub">Meta: ≤ 65%</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">💵</div><span class="stat-delta delta-up">+18%</span></div><div class="stat-val">$128M</div><div class="stat-label">Primas devengadas</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-red">💸</div><span class="stat-delta delta-up">-8%</span></div><div class="stat-val">$79.9M</div><div class="stat-label">Siniestros pagados</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-amber">🔮</div></div><div class="stat-val">$11.2M</div><div class="stat-label">Reservas constituidas</div></div>
+  </div>
+  <div class="grid-2 mb-16">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Evolución loss ratio 12 meses</span></div>
+      <div class="panel-body chart-wrap" style="height:220px"><canvas id="chart-lr"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Loss ratio por segmento</span></div>
+      <div class="panel-body">
+        ${[
+          {seg:'Sedán Leve',lr:58,meta:62},
+          {seg:'SUV Moderado',lr:65,meta:65},
+          {seg:'Pick-up Grave',lr:71,meta:70},
+          {seg:'Hatchback',lr:55,meta:62},
+          {seg:'Total cartera',lr:62.4,meta:65},
+        ].map(s=>`
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+            <span style="font-weight:600;color:#1C0A00">${s.seg}</span>
+            <span style="color:${s.lr<=s.meta?'#1A7A40':'#B03000'};font-weight:700">${s.lr}% <span style="font-weight:400;color:var(--gray-400)">meta ${s.meta}%</span></span>
+          </div>
+          <div class="mini-bar" style="height:8px">
+            <div class="mini-fill" style="width:${Math.min(s.lr/s.meta*75,100)}%;background-color:${s.lr<=s.meta?'#1A7A40':'#B03000'}"></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Impacto de SiniestroAI en el loss ratio</span></div>
+    <div class="panel-body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <div style="text-align:center;padding:16px;background:var(--gray-50);border-radius:var(--radius)">
+          <div style="font-size:11px;color:var(--gray-400);margin-bottom:6px">Loss ratio SIN IA (estimado)</div>
+          <div style="font-size:32px;font-weight:800;color:var(--red);font-family:var(--font-display)">68.2%</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#FFF1E6;border-radius:var(--radius)">
+          <div style="font-size:11px;color:#F47920;font-weight:600;margin-bottom:6px">Loss ratio CON IA (real)</div>
+          <div style="font-size:32px;font-weight:800;color:#F47920;font-family:var(--font-display)">62.4%</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:var(--teal-lt);border-radius:var(--radius)">
+          <div style="font-size:11px;color:#1A7A40;font-weight:600;margin-bottom:6px">Mejora obtenida</div>
+          <div style="font-size:32px;font-weight:800;color:#1A7A40;font-family:var(--font-display)">-5.8pts</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const ctx = document.getElementById('chart-lr');
+    if(ctx) new Chart(ctx, {
+      type:'line',
+      data:{
+        labels:['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr'],
+        datasets:[
+          {label:'Loss Ratio',data:[71.2,69.8,68.4,67.1,66.3,65.8,64.9,64.1,63.8,63.2,63.0,62.4],borderColor:'#F47920',backgroundColor:'rgba(244,121,32,0.08)',fill:true,tension:0.4,borderWidth:2,pointRadius:3},
+          {label:'Meta (65%)',data:Array(12).fill(65),borderColor:'#1C0A00',borderDash:[4,4],borderWidth:1.5,pointRadius:0},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:58,max:74,grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:v=>v+'%'}}}}
+    });
+  }, 100);
+}
+
+// ─── TENDENCIAS ──────────────────
+function renderTendencias() {
+  document.getElementById('tc-tendencias').innerHTML = `
+  <div class="grid-2 mb-16">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Tendencia de siniestros por tipo</span></div>
+      <div class="panel-body chart-wrap" style="height:220px"><canvas id="chart-tipo"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Costo promedio por zona ($ miles)</span></div>
+      <div class="panel-body chart-wrap" style="height:220px"><canvas id="chart-zona"></canvas></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Estacionalidad</span></div>
+      <div class="panel-body">
+        <div class="alert alert-warn"><div class="alert-icon">📅</div><div><div class="alert-title">Pico estacional detectado</div><div class="alert-body">Abril-Mayo históricamente registra +22% en siniestros de vidrios y +15% en frontales. El modelo ajustó umbrales automáticamente.</div></div></div>
+        ${[{m:'Enero',n:295},{m:'Febrero',n:318},{m:'Marzo',n:312},{m:'Abril',n:342},{m:'Mayo (est.)',n:364},{m:'Junio (est.)',n:310}].map(m=>`
+        <div class="h-bar-row" style="margin-bottom:6px"><span class="h-bar-label">${m.m}</span>
+          <div class="h-bar-track"><div class="h-bar-fill" style="width:${m.n/4}%;background:${m.m.includes('est')?'#F9A05A':'#F47920'}">${m.n}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Evolución costo promedio</span></div>
+      <div class="panel-body">
+        ${[{p:'Q2 2024',v:310000,d:'+0%'},{p:'Q3 2024',v:328000,d:'+5.8%'},{p:'Q4 2024',v:341000,d:'+3.9%'},{p:'Q1 2025',v:362000,d:'+6.2%'},{p:'Q2 2025 est.',v:381000,d:'+5.2%'}].map(q=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px">
+          <span style="color:var(--gray-600)">${q.p}</span>
+          <span style="font-weight:600;color:#1C0A00">${fmt(q.v)}</span>
+          <span style="font-size:11px;color:#1A7A40">${q.d}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Alertas predictivas</span></div>
+      <div class="panel-body">
+        <div class="alert alert-red"><div class="alert-icon">🔮</div><div><div class="alert-title">Pick-ups: alza de repuestos</div><div class="alert-body">El modelo proyecta un alza de 12-18% en repuestos de pick-up para mayo. Considerar ajuste de reservas.</div></div></div>
+        <div class="alert alert-blue"><div class="alert-icon">🔮</div><div><div class="alert-title">GBA Norte: frecuencia creciente</div><div class="alert-body">Tendencia +8% en zona GBA Norte. Recomendado revisar exposición de cartera.</div></div></div>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const ctx1 = document.getElementById('chart-tipo');
+    if(ctx1) new Chart(ctx1,{type:'line',data:{labels:['Nov','Dic','Ene','Feb','Mar','Abr'],datasets:[
+      {label:'Frontal',data:[91,98,88,102,97,110],borderColor:'#F47920',tension:0.4,borderWidth:2,pointRadius:2},
+      {label:'Trasero',data:[48,52,47,54,51,58],borderColor:'#1C0A00',tension:0.4,borderWidth:2,pointRadius:2},
+      {label:'Lateral',data:[42,44,40,48,44,52],borderColor:'#E86A10',tension:0.4,borderWidth:2,pointRadius:2},
+      {label:'Vidrios',data:[28,30,26,36,38,46],borderColor:'#B03000',tension:0.4,borderWidth:2,pointRadius:2},
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},scales:{y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10}}}}}});
+    const ctx2 = document.getElementById('chart-zona');
+    if(ctx2) new Chart(ctx2,{type:'bar',data:{labels:['CABA','GBA N','GBA S','GBA O','Córdoba','Rosario','Mendoza'],datasets:[{label:'Costo prom. ($K)',data:[412,358,310,298,284,271,260],backgroundColor:'rgba(244,121,32,0.7)',borderColor:'#F47920',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:v=>'$'+v+'K'}}}}});
+  },100);
+}
+
+// ─── MODELO (ADMIN) ───────────────
+function renderModelo() {
+  document.getElementById('tc-modelo').innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--navy)">Estado del modelo — v2.4.1</div>
+    <div style="display:flex;gap:6px">
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📥 Cargando nuevos datos de entrenamiento...')">📥 Cargar nuevos datos</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('🧠 Reentrenamiento iniciado — duración estimada: 40 min')">🧠 Reentrenar modelo</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Reporte técnico exportado')">📊 Exportar métricas</button>
+      <button class="r-btn" style="padding:5px 14px;font-size:12px;border-color:#1A7A40;color:#1A7A40" onclick="showToast('✅ Backup del modelo generado correctamente')">💾 Backup del modelo</button>
+    </div>
+  </div>
+  <div class="stat-grid mb-20">
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">🤖</div><span class="stat-delta delta-up">Activo</span></div><div class="stat-val">v2.4.1</div><div class="stat-label">Versión del modelo</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-blue">📊</div></div><div class="stat-val">4.847</div><div class="stat-label">Casos en base de entrenamiento</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-teal">🎯</div></div><div class="stat-val">87.3%</div><div class="stat-label">Precisión global (test set)</div></div>
+    <div class="stat-card"><div class="stat-card-top"><div class="stat-icon icon-amber">🔄</div></div><div class="stat-val">08/04</div><div class="stat-label">Último reentrenamiento</div></div>
+  </div>
+  <div class="grid-2-1 mb-16">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Evolución de precisión del modelo</span></div>
+      <div class="panel-body chart-wrap" style="height:200px"><canvas id="chart-prec"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Clusters activos</span></div>
+      <div class="panel-body">
+        ${[{c:'Sedán Leve',n:312,prec:91},{c:'SUV Moderado',n:187,prec:89},{c:'Pick-up Grave',n:94,prec:83},{c:'Hatchback',n:241,prec:90},{c:'SUV Grave',n:78,prec:80},{c:'Otros',n:210,prec:75}].map(cl=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px">
+          <span style="color:var(--gray-600)">${cl.c}</span>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span style="color:var(--gray-400)">${cl.n} casos</span>
+            <span class="pill ${cl.prec>=85?'pill-green':'pill-amber'}">${cl.prec}%</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Variables más influyentes</span></div>
+      <div class="panel-body">
+        ${[{v:'Severidad del daño',p:31},{v:'Marca/modelo',p:22},{v:'Año del vehículo',p:18},{v:'Zona geográfica',p:14},{v:'Zonas afectadas',p:11},{v:'Kilometraje',p:4}].map(v=>`
+        <div class="h-bar-row"><span class="h-bar-label" style="min-width:120px">${v.v}</span>
+          <div class="h-bar-track"><div class="h-bar-fill" style="width:${v.p*2.8}%;background:#F47920">${v.p}%</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Métricas de evaluación</span></div>
+      <div class="panel-body">
+        ${[{k:'MAPE',v:'8.4%',desc:'Error porcentual medio'},{k:'R²',v:'0.913',desc:'Coeficiente determinación'},{k:'RMSE',v:'$28.400',desc:'Error cuadrático medio'},{k:'Sesgo',v:'-1.2%',desc:'Tendencia del modelo'},{k:'Cobertura rango',v:'94.1%',desc:'Casos dentro del rango'}].map(m=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px">
+          <div><div style="font-weight:600;color:#1C0A00">${m.k}</div><div style="font-size:11px;color:var(--gray-400)">${m.desc}</div></div>
+          <span style="font-weight:700;color:#F47920">${m.v}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="panel-title">Log de reentrenamientos</span></div>
+      <div class="panel-body">
+        <div class="timeline">
+          ${[
+            {t:'08/04',text:'v2.4.1 — +342 casos nuevos, precisión +0.8pts', c:'#1A7A40'},
+            {t:'01/03',text:'v2.4.0 — Nuevo cluster pick-ups 2023', c:'#F47920'},
+            {t:'15/02',text:'v2.3.9 — Ajuste repuestos post-actualización', c:'#F47920'},
+            {t:'02/01',text:'v2.3.8 — Reentrenamiento trimestral', c:'#F47920'},
+          ].map(i=>`<div class="tl-item"><div class="tl-dot" style="background:${i.c}"></div><span class="tl-time">${i.t}</span><span class="tl-text">${i.text}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const ctx = document.getElementById('chart-prec');
+    if(ctx) new Chart(ctx,{type:'line',data:{labels:['v2.0','v2.1','v2.2','v2.3','v2.3.8','v2.3.9','v2.4.0','v2.4.1'],datasets:[{label:'Precisión %',data:[78.2,80.1,82.4,83.9,84.8,85.6,86.5,87.3],borderColor:'#1C0A00',backgroundColor:'rgba(28,10,0,0.06)',fill:true,tension:0.4,borderWidth:2,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:75,max:92,grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},callback:v=>v+'%'}}}}});
+  },100);
+}
+
+// ─── PARAMETROS ──────────────────
+function renderParametros() {
+  document.getElementById('tc-parametros').innerHTML = `
+  <div style="display:flex;justify-content:flex-end;gap:6px;margin-bottom:12px">
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📥 Importando configuración desde archivo...')">📥 Importar configuración</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px" onclick="showToast('📊 Configuración exportada a Excel')">📊 Exportar configuración</button>
+    <button class="r-btn" style="padding:5px 14px;font-size:12px;border-color:#B03000;color:#B03000" onclick="showToast('↩️ Configuración restaurada a valores por defecto')">↩️ Restaurar defaults</button>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Ajustes por zona geográfica</span></div>
+        <div class="panel-body">
+          <table class="data-table">
+            <thead><tr><th>Zona</th><th>Factor actual</th><th>Ajustar</th></tr></thead>
+            <tbody>
+              ${[{z:'CABA',f:1.12},{z:'GBA Norte',f:1.08},{z:'GBA Sur',f:0.97},{z:'GBA Oeste',f:0.96},{z:'Córdoba',f:0.94},{z:'Rosario',f:0.93},{z:'Mendoza',f:0.91},{z:'Interior',f:0.87}].map(z=>`
+              <tr>
+                <td class="cell-bold">${z.z}</td>
+                <td><span class="pill ${z.f>=1?'pill-blue':'pill-gray'}">×${z.f}</span></td>
+                <td><input type="number" step="0.01" value="${z.f}" style="width:70px;padding:4px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12px;font-family:var(--font-mono)"></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <button class="calc-btn" style="margin-top:12px" onclick="showToast('✅ Factores de zona actualizados')">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="panel mb-16">
+        <div class="panel-head"><span class="panel-title">Configuración general del modelo</span></div>
+        <div class="panel-body">
+          ${[
+            {k:'Umbral mínimo de confianza',v:'65%',desc:'Por debajo: alerta de revisión manual'},
+            {k:'Rango de negociación inferior',v:'-24%',desc:'Del valor de referencia'},
+            {k:'Rango de negociación superior',v:'+28%',desc:'Del valor de referencia'},
+            {k:'Casos mínimos por cluster',v:'15',desc:'Para activar el cluster'},
+            {k:'Frecuencia de reentrenamiento',v:'Mensual',desc:'Con nuevos cierres disponibles'},
+            {k:'Actualización base repuestos',v:'Cada 48h',desc:'Fuente: proveedor oficial'},
+          ].map(p=>`
+          <div style="padding:10px 0;border-bottom:1px solid var(--gray-100)">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px">
+              <div><div style="font-weight:600;color:#1C0A00">${p.k}</div><div style="font-size:11px;color:var(--gray-400)">${p.desc}</div></div>
+              <span style="font-family:var(--font-mono);font-size:13px;color:#F47920;font-weight:600">${p.v}</span>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Disparadores de alerta</span></div>
+        <div class="panel-body">
+          ${[{l:'Excede rango histórico en',v:'+20%'},{l:'Confianza menor a',v:'65%'},{l:'Sin movimiento en más de',v:'72h'},{l:'Diferencia con presupuesto taller',v:'±35%'}].map(a=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--gray-100);font-size:12.5px">
+            <span style="color:var(--gray-600)">${a.l}</span>
+            <span style="font-family:var(--font-mono);color:var(--amber);font-weight:600">${a.v}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── USUARIOS ────────────────────
+function renderUsuarios() {
+  document.getElementById('tc-usuarios').innerHTML = `
+  <div class="panel">
+    <div style="padding:10px 18px;background:var(--gray-50);border-bottom:1px solid var(--gray-100);display:flex;gap:8px;align-items:center">
+      <span style="font-size:12px;font-weight:600;color:var(--gray-600)">Gestión de usuarios:</span>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('➕ Abriendo formulario de nuevo usuario...')">➕ Nuevo usuario</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📥 Importando usuarios desde Excel...')">📥 Importar desde Excel</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px" onclick="showToast('📊 Lista de usuarios exportada')">📊 Exportar lista</button>
+      <button class="r-btn" style="padding:5px 12px;font-size:12px;margin-left:auto" onclick="showToast('📧 Invitaciones de acceso enviadas')">📧 Enviar invitaciones</button>
+    </div>
+    <div class="filter-bar">
+      <input class="filter-input" placeholder="🔍  Buscar usuario..." />
+      <button class="filter-chip on">Todos</button>
+      <button class="filter-chip">Cotizadores</button>
+      <button class="filter-chip">Supervisores</button>
+      <button class="filter-chip">Activos</button>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Usuario</th><th>Rol</th><th>Último acceso</th><th>Casos (mes)</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody>
+        ${[
+          {n:'Martín Rodríguez',r:'Cotizador',u:'Hoy 09:14',c:42,a:true},
+          {n:'Paula Gómez',r:'Cotizador',u:'Hoy 08:50',c:37,a:true},
+          {n:'Sergio Torres',r:'Cotizador',u:'Hoy 07:30',c:31,a:true},
+          {n:'Laura Moreno',r:'Cotizador',u:'Ayer 18:22',c:28,a:true},
+          {n:'Laura Vidal',r:'Supervisor',u:'Hoy 09:00',c:0,a:true},
+          {n:'Carlos Ferreyra',r:'Gerente',u:'Hoy 08:30',c:0,a:true},
+          {n:'Ana Quintero',r:'Admin',u:'Hoy 09:10',c:0,a:true},
+          {n:'Roberto Solis',r:'Cotizador',u:'Hace 7 días',c:0,a:false},
+        ].map(u=>`<tr>
+          <td class="cell-bold">${u.n}</td>
+          <td><span class="pill ${u.r==='Cotizador'?'pill-blue':u.r==='Supervisor'?'pill-green':u.r==='Gerente'?'pill-gray':'pill-amber'}">${u.r}</span></td>
+          <td style="color:var(--gray-400);font-size:12px">${u.u}</td>
+          <td style="text-align:center">${u.c||'—'}</td>
+          <td><span class="pill ${u.a?'pill-green':'pill-gray'}">${u.a?'Activo':'Inactivo'}</span></td>
+          <td><button class="panel-action" onclick="showToast('Editando usuario ${u.n}')">Editar</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ═══ UTILS ═══
+function estPill(est) {
+  if(est==='cerrado') return '<span class="pill pill-green">Cerrado</span>';
+  if(est==='revision') return '<span class="pill pill-amber">En revisión</span>';
+  return '<span class="pill pill-blue">Pendiente</span>';
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
